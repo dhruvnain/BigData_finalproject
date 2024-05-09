@@ -1,4 +1,4 @@
-# Link to google drive that contains. deflate files which are needed to run this pipeline.
+# Link to google drive that contains .deflate files which are needed to run this pipeline.
 https://drive.google.com/drive/folders/1EE0eWR3B2DUkGLGmNgtprYSeESAEhGYl?usp=sharing
 # ACHE
 
