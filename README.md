@@ -34,18 +34,17 @@ The resulting dataframe, obtained by combining these two methods, should include
 ```
 Please be aware that it may not always be possible to collect every piece of information for every page, resulting in some NaN values in the dataframe.
 
-With the location column, we leverage [datamart_geo](https://gitlab.com/ViDA-NYU/auctus/datamart-geo) to extract the latitude, longitude, and country name associated with each entry. Furthermore, the image column is used to download the corresponding product images using their respective URLs.
+Furthermore, the image column is used to download the corresponding product images using their respective URLs. We realized that the image column had multiple duplicate values belonging to different rows of the dataframe with no other duplicate items which depicted that these entries were valid but they just pointed to same image links. Downloading and saving an image is an expensive I/O process and thus it contributed to a major chunk of our runtime.
 
 ## Load
 
-Finally, in the load step, we store the processed dataframe and images in a [MinIO](https://miniodisn.hsrn.nyu.edu/browser) bucket. Each bucket is named according to the month from which the data was retrieved by the crawler.
-
-For more details, please refer to the [following link](https://docs.google.com/presentation/d/14Azy2_fdiq7it8s9sV5XxxfC7x8Hwdip49D_Q8SQshA/edit#slide=id.p).
+Finally, in the load step, we store the processed dataframe and images in a local directory on your machine. Each image folder is named according to the month from which the data was retrieved by the crawler.
 
 
-## Zero-shot Classification
 
-With the information collected in the previous steps we select two columns to perform Zero-shot classification task: PRODUCT (title column or name column in case title is not present) and DESCRIPTION. A zero-shot model is a machine learning model that can perform a task without being explicitly trained on examples specific to that task. It relies on pretrained language models that have learned general language representations from large datasets. The model used right now is the [facebook/bart-large-mnli](https://huggingface.co/facebook/bart-large-mnli).
+## Multi-model Classification
+
+With the information collected in the previous steps we select two columns to perform Zero-shot classification task: PRODUCT (title column or name column in case title is not present) and Image. A zero-shot model is a machine learning model that can perform a task without being explicitly trained on examples specific to that task. It relies on pretrained language models that have learned general language representations from large datasets. The model used right now is the attached in the google drive link given above.
 
 and the labels we try to predict is:
 
@@ -59,6 +58,4 @@ labels = ["a real animal",
           "an faux animal body part"]
 ```
 
-The final dataframe will contain the labels with the highest score and the score for each of the two columns used for classification (product and description). After that we select the final label from the maximum score between the two predictions.
-
-In a separted bucket [zeros-shot-{month}] the results os the zero-shot clf is storaged. You can find the exactly parquet file name of the original dataframe. 
+The final dataframe will contain the labels with the highest score.
